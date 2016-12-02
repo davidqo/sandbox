@@ -12,14 +12,14 @@
 start(_StartType, _StartArgs) ->
     Dispatch = cowboy_router:compile([
         {'_', [
-            {"/", index_handler, []},
-            {'_', notfound_handler, []}
+            {"/", index_handler, #{}},
+            {'_', notfound_handler, #{}}
         ]}
     ]),
     Port = 18080,
-    {ok, _} = cowboy:start_http(http_listener, 100,
+    {ok, _} = cowboy:start_clear(http_listener, 100,
         [{port, Port}],
-        [{env, [{dispatch, Dispatch}]}]
+        #{env => #{dispatch => Dispatch}}
     ),
     game_sup:start_link().
 %%+++++++++++++++++++++++++++++++++++++++++++++++++

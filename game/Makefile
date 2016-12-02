@@ -5,13 +5,13 @@ all: deps compile
 deps:
 	@( $(REBAR) get-deps )
 
-compile: clean
+compile: 
 	@( $(REBAR) compile )
 
 clean:
 	@( $(REBAR) clean )
 
 run:
-	@( erl -pa ebin deps/*/ebin -s webserver )
+	@( erl -pa ebin deps/*/ebin -s game_webserver )
 
 .PHONY: all deps compile clean run

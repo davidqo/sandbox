@@ -6,7 +6,7 @@
     stop/0
 ]).
 
--define(APPS, [crypto, ranch, cowboy, webserver]).
+-define(APPS, [crypto, ranch, cowlib, cowboy, game]).
 
 %% ===================================================================
 %% API functions
