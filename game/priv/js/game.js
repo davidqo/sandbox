@@ -1,9 +1,21 @@
+function randomInteger(min, max) {
+    var rand = min - 0.5 + Math.random() * (max - min + 1)
+    rand = Math.round(rand);
+    return rand;
+}
+
 Crafty.init(500,350, document.getElementById('game'));
-Crafty.e('Floor, 2D, Canvas, Color')
-      .attr({x: 0, y: 250, w: 250, h: 10})
-      .color('green');
-Crafty.e('2D, Canvas, Color, Twoway, Gravity')
-      .attr({x: 0, y: 0, w: 50, h: 50})
-      .color('#F00')
-      .twoway(200)
-      .gravity('Floor');
+
+Crafty.sprite(32, "img/sprite_map.png", {
+		grass1: [0,0],
+		grass2: [1,0],
+		grass3: [2,0],
+		grass4: [3,0]
+	});
+
+for(var i = 0; i < 20; i++) {
+    for(var j = 0; j < 20; j++) {
+        grassType = randomInteger(1, 4);
+        Crafty.e("2D, Canvas, grass" + grassType).attr({x: i * 32, y: j * 32});
+    }
+}
