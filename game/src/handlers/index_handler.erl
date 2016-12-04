@@ -7,9 +7,11 @@
 ]).
 
 init(Req, State) ->
-	Body = <<"<h1>It works!</h1>">>,
-	{ok, Req2} = cowboy_req:reply(200, #{}, Body, Req),
-	{ok, Req2, State}.
+	Body = game_utils:get_request_body(Req),
+	Username = game_utils:get_value(<<"username">>, Body, "stranger"),
+	{ok, HTML} = index_dtl:render([{username, Username}]),
+	{ok, Req3} = cowboy_req:reply(200, #{}, HTML, Req),
+	{ok, Req3, State}.
 %%+++++++++++++++++++++++++++++++++++++++++++++++++
 
 terminate(_Reason, _Req, _State) ->
