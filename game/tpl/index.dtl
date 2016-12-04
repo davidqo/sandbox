@@ -1,4 +1,7 @@
 {% extends "layout.dtl" %}
 {% block content %}
 <h1>Hello, {{ username | default : "stranger" }}!</h1>
+<div id="game"></div>
+<script type="text/javascript" src="js/crafty.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
 {% endblock %}
