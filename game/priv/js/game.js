@@ -10,7 +10,8 @@ Crafty.sprite(32, "img/sprite_map.png", {
 		grass1: [0,0],
 		grass2: [1,0],
 		grass3: [2,0],
-		grass4: [3,0]
+		grass4: [3,0],
+		npc: [0,1]
 	});
 
 for(var i = 0; i < 20; i++) {
@@ -19,3 +20,11 @@ for(var i = 0; i < 20; i++) {
         Crafty.e("2D, Canvas, grass" + grassType).attr({x: i * 32, y: j * 32});
     }
 }
+
+Crafty.e("2D, DOM, npc, Animate")
+						.attr({x: 2 * 32, y: 2 * 32})
+						.animate("walk", 0, 1, 2)
+						.bind("enterframe", function() {
+							if(!this.isPlaying())
+								this.animate("walk", 80);
+						});
