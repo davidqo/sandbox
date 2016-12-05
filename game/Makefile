@@ -1,4 +1,4 @@
-REBAR = `which rebar`
+REBAR = ./rebar
 
 all: deps compile
 
@@ -12,6 +12,6 @@ clean:
 	@( $(REBAR) clean )
 
 run:
-	@( erl -pa ebin deps/*/ebin -s game_webserver )
+	@( erl -pa $(PWD)/ebin -pa deps/*/ebin -s game_webserver )
 
 .PHONY: all deps compile clean run
