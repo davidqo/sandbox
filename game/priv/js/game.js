@@ -27,11 +27,13 @@ Crafty.c('NPC', {
 		this.requires("Canvas");
 		this.requires("npc");
 		this.requires("SpriteAnimation");
+		//this.requires("Fourway");
+		//this.fourway(100);
 
 		this.attr({x: 0, y: 0});
 
 		//reel(ReelId, DurationMilliseconds, SpriteMapStartPosX, SpriteMapStartPosY, NumberOfSprites)
-		this.reel('walk', 1000, 0, 1, 2);
+		this.reel('walk', 1000, 0, 1, 4);
 
 		this.bind("EnterFrame", function() {
 			if(!this.isPlaying()) {
