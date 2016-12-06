@@ -21,10 +21,29 @@ for(var i = 0; i < 20; i++) {
     }
 }
 
-Crafty.e("2D, DOM, npc, Animate")
-						.attr({x: 2 * 32, y: 2 * 32})
-						.animate("walk", 0, 1, 2)
-						.bind("enterframe", function() {
-							if(!this.isPlaying())
-								this.animate("walk", 80);
-						});
+Crafty.c('NPC', {
+	init: function() {
+		this.requires("2D");
+		this.requires("Canvas");
+		this.requires("npc");
+		this.requires("SpriteAnimation");
+
+		this.attr({x: 0, y: 0});
+
+		//reel(ReelId, DurationMilliseconds, SpriteMapStartPosX, SpriteMapStartPosY, NumberOfSprites)
+		this.reel('walk', 1000, 0, 1, 2);
+
+		this.bind("EnterFrame", function() {
+			if(!this.isPlaying()) {
+				this.animate("walk", -1);
+			}
+		});
+	},
+
+	clear: function() {
+		this.removeComponent('walk');
+		this._visible = false;
+	}
+});
+
+Crafty.e("NPC").attr({x: 2 * 32, y: 2 * 32});
