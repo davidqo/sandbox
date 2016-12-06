@@ -21,6 +21,24 @@ for(var i = 0; i < 20; i++) {
     }
 }
 
+Crafty.c('Unit', {
+	init: function() {
+		this.requires("2D");
+		this.requires("Canvas");
+		this.requires("SpriteAnimation");
+
+		this.attr({x: 0, y: 0, z: 1});
+
+		// анимация движения, сами указатели на sprite
+		// находятся в дочерних компонентах
+
+		this.bind("Moved", function(e) {
+			if(!this.isPlaying("walk"))
+				this.stop().animate("walk", 2);
+		});
+	}
+});
+
 Crafty.c('NPC', {
 	init: function() {
 		this.requires("2D");
@@ -33,13 +51,16 @@ Crafty.c('NPC', {
 		this.attr({x: 0, y: 0});
 
 		//reel(ReelId, DurationMilliseconds, SpriteMapStartPosX, SpriteMapStartPosY, NumberOfSprites)
+		this.reel('idle', 1000, 0, 1, 4);
 		this.reel('walk', 1000, 0, 1, 4);
+		this.reel('hit_right', 500, 0, 2, 4);
+		this.reel('hit_left', 500, 0, 3, 4);
 
-		this.bind("EnterFrame", function() {
-			if(!this.isPlaying()) {
-				this.animate("walk", -1);
-			}
-		});
+		//this.bind("EnterFrame", function() {
+		//	if(!this.isPlaying()) {
+		//		this.animate("hit_right", -1);
+		//	}
+		//});
 	},
 
 	clear: function() {
