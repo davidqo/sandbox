@@ -21,6 +21,24 @@ for(var i = 0; i < 20; i++) {
     }
 }
 
+Crafty.c('DelayAction', {
+	init: function() {
+	    this.isStarted = false;
+	    this.ticks = 0;
+	    this.trigger_after = 0;
+		this.bind("EnterFrame", function(e) {
+        			if (this.isStarted) {
+        			    if (this.ticks >= this.trigger_after) {
+                            this.trigger('Timeout', {});
+        			    }
+        			    else {
+        			       this.ticks += 1;
+        			    }
+        			}
+        });
+	}
+});
+
 Crafty.c('Unit', {
 	init: function() {
 		this.requires("2D");
@@ -34,8 +52,12 @@ Crafty.c('Unit', {
 
 		this.bind("Moved", function(e) {
 			if(!this.isPlaying("walk"))
-				this.stop().animate("walk", 2);
+				this.animate("walk", -1);
 		});
+		this.bind("Idle", function(e) {
+        			if(!this.isPlaying("idle"))
+        				this.animate("idle", -1);
+        });
 	}
 });
 
@@ -45,22 +67,21 @@ Crafty.c('NPC', {
 		this.requires("Canvas");
 		this.requires("npc");
 		this.requires("SpriteAnimation");
+		this.requires("Unit");
 		//this.requires("Fourway");
 		//this.fourway(100);
 
 		this.attr({x: 0, y: 0});
 
 		//reel(ReelId, DurationMilliseconds, SpriteMapStartPosX, SpriteMapStartPosY, NumberOfSprites)
-		this.reel('idle', 1000, 0, 1, 4);
+		this.reel('idle', 1000, 0, 1, 1);
 		this.reel('walk', 1000, 0, 1, 4);
 		this.reel('hit_right', 500, 0, 2, 4);
 		this.reel('hit_left', 500, 0, 3, 4);
 
-		//this.bind("EnterFrame", function() {
-		//	if(!this.isPlaying()) {
-		//		this.animate("hit_right", -1);
-		//	}
-		//});
+		this.bind("EnterFrame", function() {
+			this.trigger("Moved", {});
+		});
 	},
 
 	clear: function() {
@@ -70,3 +91,5 @@ Crafty.c('NPC', {
 });
 
 Crafty.e("NPC").attr({x: 2 * 32, y: 2 * 32});
+
+//Crafty.trigger('Moved', {});
