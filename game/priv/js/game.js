@@ -68,12 +68,18 @@ Crafty.c('Unit', {
 		    }
 		});
 		this.bind("Idle", function(e) {
-        			if(!this.isPlaying("idle"))
-        				this.animate("idle", -1);
+        	if (this.state != "idle") {
+                this.state = "idle";
+        		if(!this.isPlaying("idle"))
+        			this.animate("idle", -1);
+        	}
         });
         this.bind("Fight", function(e) {
-        			if(!this.isPlaying("fight_right"))
-        				this.animate("fight_right", -1);
+            if (this.state != "fight") {
+                this.state = "fight";
+        		if(!this.isPlaying("fight_right"))
+        			this.animate("fight_right", -1);
+        	}
         });
         this.bind("EnterFrame", function() {
               switch(this.state) {
@@ -86,7 +92,7 @@ Crafty.c('Unit', {
                   case "fight":
                      break;
               };
-              this.delayAction(20);
+              this.delayAction(50);
         });
         this.bind("Timeout", function (e) {
             actionNum = randomInteger(1, 3);
