@@ -25,18 +25,24 @@ Crafty.c('DelayAction', {
 	init: function() {
 	    this.isStarted = false;
 	    this.ticks = 0;
-	    this.trigger_after = 0;
+	    this.triggerAfter = 0;
 		this.bind("EnterFrame", function(e) {
         			if (this.isStarted) {
-        			    if (this.ticks >= this.trigger_after) {
+        			    if (this.ticks >= this.triggerAfter) {
                             this.trigger('Timeout', {});
+                            this.isStarted = false;
+                            this.ticks = 0;
         			    }
         			    else {
         			       this.ticks += 1;
         			    }
         			}
         });
-	}
+    },
+    delayAction: function (afterTicks) {
+        this.isStarted = true;
+        this.triggerAfter = afterTicks;
+    }
 });
 
 Crafty.c('Unit', {
@@ -44,19 +50,57 @@ Crafty.c('Unit', {
 		this.requires("2D");
 		this.requires("Canvas");
 		this.requires("SpriteAnimation");
+		this.requires("DelayAction");
 
 		this.attr({x: 0, y: 0, z: 1});
-
+        this.speedVector = {x: -1, y: -1};
+        this.state = "idle"
 		// анимация движения, сами указатели на sprite
 		// находятся в дочерних компонентах
 
-		this.bind("Moved", function(e) {
-			if(!this.isPlaying("walk"))
-				this.animate("walk", -1);
+		this.bind("Walk", function(e) {
+		    if (this.state != "walk") {
+		        this.state = "walk";
+		        this.speedVector.x *= -1;
+		        this.speedVector.y *= -1;
+		        if(!this.isPlaying("walk"))
+            		this.animate("walk", -1);
+		    }
 		});
 		this.bind("Idle", function(e) {
         			if(!this.isPlaying("idle"))
         				this.animate("idle", -1);
+        });
+        this.bind("Fight", function(e) {
+        			if(!this.isPlaying("fight_right"))
+        				this.animate("fight_right", -1);
+        });
+        this.bind("EnterFrame", function() {
+              switch(this.state) {
+                  case "idle":
+                     break;
+                  case "walk":
+                     this.x += this.speedVector.x;
+                     this.y += this.speedVector.y;
+                     break;
+                  case "fight":
+                     break;
+              };
+              this.delayAction(20);
+        });
+        this.bind("Timeout", function (e) {
+            actionNum = randomInteger(1, 3);
+            switch (actionNum) {
+                case 1:
+                    this.trigger("Walk", {});
+                    break;
+                case 2:
+                    this.trigger("Idle", {});
+                    break;
+                case 3:
+                    this.trigger("Fight", {});
+                    break;
+            }
         });
 	}
 });
@@ -68,20 +112,14 @@ Crafty.c('NPC', {
 		this.requires("npc");
 		this.requires("SpriteAnimation");
 		this.requires("Unit");
-		//this.requires("Fourway");
-		//this.fourway(100);
 
 		this.attr({x: 0, y: 0});
 
 		//reel(ReelId, DurationMilliseconds, SpriteMapStartPosX, SpriteMapStartPosY, NumberOfSprites)
 		this.reel('idle', 1000, 0, 1, 1);
 		this.reel('walk', 1000, 0, 1, 4);
-		this.reel('hit_right', 500, 0, 2, 4);
-		this.reel('hit_left', 500, 0, 3, 4);
-
-		this.bind("EnterFrame", function() {
-			this.trigger("Moved", {});
-		});
+		this.reel('fight_right', 500, 0, 2, 4);
+		this.reel('fight_left', 500, 0, 3, 4);
 	},
 
 	clear: function() {
@@ -90,6 +128,6 @@ Crafty.c('NPC', {
 	}
 });
 
-Crafty.e("NPC").attr({x: 2 * 32, y: 2 * 32});
+Crafty.e("NPC").attr({x: 2 * 32, y: 2 * 32}).delayAction(10);
 
 //Crafty.trigger('Moved', {});
