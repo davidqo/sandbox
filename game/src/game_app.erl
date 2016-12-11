@@ -28,6 +28,7 @@ dispatch_rules() ->
       static_content_rule("js"),
       static_content_rule("img"),
       {"/", index_handler, []},
+      {"/websocket", websocket_handler, []},
       {'_', notfound_handler, []}
     ]}
   ]).

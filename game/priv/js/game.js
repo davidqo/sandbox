@@ -1,10 +1,65 @@
+//
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+//
+
 function randomInteger(min, max) {
     var rand = min - 0.5 + Math.random() * (max - min + 1)
     rand = Math.round(rand);
     return rand;
 }
 
-Crafty.init(500,350, document.getElementById('game'));
+function log(string) {
+  var date = new Date();
+  document.getElementById("log").innerHTML =
+  format_time_component(date.getHours()) + ":"
+  + format_time_component(date.getMinutes()) + ":"
+  + format_time_component(date.getSeconds()) + ":"
+  + date.getMilliseconds()
+  + ": " + string;
+}
+
+function format_time_component(component) {
+   if (component < 10)
+       return "0" + component
+   else
+       return "" + component
+}
+
+//
+// WEBSOCKETS
+//
+
+var socket = new WebSocket("ws://127.0.0.1:18080/websocket");
+
+socket.onopen = function() {
+  log("Connection established.");
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    log('Connection closed');
+  } else {
+    log('Connection lost'); // например, "убит" процесс сервера
+  }
+  log('Code: ' + event.code + ' reason: ' + event.reason);
+};
+
+socket.onmessage = function(event) {
+  log("Incoming message: " + event.data);
+};
+
+socket.onerror = function(error) {
+  log("Error: " + error.message);
+};
+
+//
+// ИНИЦИАЛИЗАЦИЯ CRAFTY
+//
+
+var w = window.innerWidth;
+var h = window.innerHeight;
+
+Crafty.init(w, h, document.getElementById('game'));
 
 Crafty.sprite(32, "img/sprite_map.png", {
 		grass1: [0,0],
@@ -152,4 +207,3 @@ Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
 		Crafty.removeEvent(this, Crafty.stage.elem, "mousemove", scroll);
 	});
 });
-//Crafty.trigger('Moved', {});
