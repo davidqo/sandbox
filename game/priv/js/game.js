@@ -44,13 +44,29 @@ socket.onclose = function(event) {
   log('Code: ' + event.code + ' reason: ' + event.reason);
 };
 
-socket.onmessage = function(event) {
-  log("Incoming message: " + event.data);
+socket.onmessage = function(e) {
+    var events = JSON.parse(e.data);
+    for (var i = 0; i < events.length; i++) {
+        process_event(events[i]);
+    }
 };
 
 socket.onerror = function(error) {
   log("Error: " + error.message);
 };
+
+function process_event(event) {
+    console.log(event);
+    switch(event.name) {
+        case 'text_notification':
+            log(event.body);
+            break;
+        default:
+            log('Unknown event');
+            break;
+    }
+
+}
 
 //
 // ИНИЦИАЛИЗАЦИЯ CRAFTY

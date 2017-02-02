@@ -33,9 +33,7 @@ encode_event(Event) ->
 %%+++++++++++++++++++++++++++++++++++++++++++++++++
 
 encode_events(Events) ->
-	Result = events_to_json(Events),
-	Size = byte_size(Result),
-	<<Size:32, Result/binary>>.
+	events_to_json(Events).
 %%+++++++++++++++++++++++++++++++++++++++++++++++++
 
 events_to_json(Events) ->
